@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "eslint src/ --max-warnings 0 --no-error-on-unmatched-pattern",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix --no-cache",
-    "vercel-build": "vite build --outDir dist",
+    "vercel-build": "next build",
     "prepare": "husky",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

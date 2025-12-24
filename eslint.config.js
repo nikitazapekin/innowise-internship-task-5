@@ -39,6 +39,7 @@ export default [
           ],
         },
       ],
+      "no-undef": "off",
       "simple-import-sort/exports": "error",
     },
   },

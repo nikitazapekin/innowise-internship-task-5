@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
+import Link from "next/link";
 import * as z from "zod";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -37,7 +38,6 @@ export function RegisterForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const setCredentials = useAuthStore((state) => state.setCredentials);
-  const storedLogin = useAuthStore((state) => state.login);
 
   const {
     register,
@@ -58,8 +58,6 @@ export function RegisterForm() {
   }, []);
 
   const onSubmit = async (data: RegisterFormData) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
     setCredentials(data.login, data.password);
 
     setIsSubmitted(true);
@@ -84,15 +82,6 @@ export function RegisterForm() {
           <CardDescription>Создайте новый аккаунт</CardDescription>
         </CardHeader>
         <CardContent>
-          {storedLogin && (
-            <Alert className="mb-6">
-              <CheckCircle2 className="h-4 w-4" />
-              <AlertDescription>
-                В системе сохранен логин: <strong>{storedLogin}</strong>
-              </AlertDescription>
-            </Alert>
-          )}
-
           {isSubmitted && (
             <Alert className="mb-6">
               <CheckCircle2 className="h-4 w-4" />
@@ -107,12 +96,12 @@ export function RegisterForm() {
                 id="login"
                 placeholder="Введите логин"
                 {...register("login")}
-                className={errors.login ? "border-destructive" : ""}
+                className={errors.login ? "border-red-500" : ""}
               />
               {errors.login && (
-                <div className="flex items-center gap-1 text-destructive text-sm">
-                  <AlertCircle className="h-4 w-4" />
-                  <span>{errors.login.message}</span>
+                <div className="flex items-center gap-1 text-sm p-2 rounded-md bg-red-50 border border-red-200">
+                  <AlertCircle className="h-4 w-4 text-red-600" />
+                  <span className="text-red-600 font-medium">{errors.login.message}</span>
                 </div>
               )}
             </div>
@@ -124,12 +113,12 @@ export function RegisterForm() {
                 type="password"
                 placeholder="Введите пароль"
                 {...register("password")}
-                className={errors.password ? "border-destructive" : ""}
+                className={errors.password ? "border-red-500" : ""}
               />
               {errors.password && (
-                <div className="flex items-center gap-1 text-destructive text-sm">
-                  <AlertCircle className="h-4 w-4" />
-                  <span>{errors.password.message}</span>
+                <div className="flex items-center gap-1 text-sm p-2 rounded-md bg-red-50 border border-red-200">
+                  <AlertCircle className="h-4 w-4 text-red-600" />
+                  <span className="text-red-600 font-medium">{errors.password.message}</span>
                 </div>
               )}
             </div>
@@ -141,12 +130,12 @@ export function RegisterForm() {
                 type="password"
                 placeholder="Повторите пароль"
                 {...register("confirmPassword")}
-                className={errors.confirmPassword ? "border-destructive" : ""}
+                className={errors.confirmPassword ? "border-red-500" : ""}
               />
               {errors.confirmPassword && (
-                <div className="flex items-center gap-1 text-destructive text-sm">
-                  <AlertCircle className="h-4 w-4" />
-                  <span>{errors.confirmPassword.message}</span>
+                <div className="flex items-center gap-1 text-sm p-2 rounded-md bg-red-50 border border-red-200">
+                  <AlertCircle className="h-4 w-4 text-red-600" />
+                  <span className="text-red-600 font-medium">{errors.confirmPassword.message}</span>
                 </div>
               )}
             </div>
@@ -161,11 +150,15 @@ export function RegisterForm() {
                 "Зарегистрироваться"
               )}
             </Button>
+            <div className="text-center mt-4">
+              <Link
+                href="/auth"
+                className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
+              >
+                Войти в аккаунт
+              </Link>
+            </div>
           </form>
-
-          <div className="mt-6 text-center text-sm text-muted-foreground">
-            После регистрации данные будут сохранены в локальном хранилище
-          </div>
         </CardContent>
       </Card>
     </div>

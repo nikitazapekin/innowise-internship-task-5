@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAuthStore } from "@/store/auth-store";
 
 const loginSchema = z.object({
   login: z.string().min(1, "Введите логин"),
@@ -26,15 +25,10 @@ export function LoginForm() {
   const [loginError, setLoginError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const storedLogin = useAuthStore((state) => state.login);
-  const storedPassword = useAuthStore((state) => state.password);
-  const setCredentials = useAuthStore((state) => state.setCredentials);
-
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   });
@@ -43,32 +37,28 @@ export function LoginForm() {
     setLoginError(null);
     setIsSubmitting(true);
 
-    if (!storedLogin || !storedPassword) {
-      setLoginError("Пользователь не найден. Зарегистрируйтесь сначала.");
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        router.push("/products");
+        router.refresh();
+      } else {
+        setLoginError(result.error || "Ошибка авторизации");
+      }
+    } catch {
+      setLoginError("Ошибка соединения с сервером");
+    } finally {
       setIsSubmitting(false);
-
-      return;
     }
-
-    if (data.login !== storedLogin) {
-      setLoginError("Неверный логин");
-      setIsSubmitting(false);
-
-      return;
-    }
-
-    if (data.password !== storedPassword) {
-      setLoginError("Неверный пароль");
-      setIsSubmitting(false);
-
-      return;
-    }
-
-    setCredentials(data.login, data.password);
-
-    router.push("/products");
-
-    reset();
   };
 
   return (

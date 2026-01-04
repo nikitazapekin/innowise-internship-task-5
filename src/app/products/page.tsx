@@ -1,5 +1,5 @@
 const Products = () => {
-  return <>Prosucrs</>;
+  return <>Products</>;
 };
 
 export default Products;

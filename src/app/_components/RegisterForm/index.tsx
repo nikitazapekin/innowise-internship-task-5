@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import * as z from "zod";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -12,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAuthStore } from "@/store/auth-store";
 
 const registerSchema = z
   .object({
@@ -35,9 +35,9 @@ const registerSchema = z
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 export function RegisterForm() {
+  const router = useRouter();
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
-  const setCredentials = useAuthStore((state) => state.setCredentials);
+  const [registerError, setRegisterError] = useState<string | null>(null);
 
   const {
     register,
@@ -53,26 +53,34 @@ export function RegisterForm() {
     },
   });
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
   const onSubmit = async (data: RegisterFormData) => {
-    setCredentials(data.login, data.password);
+    setRegisterError(null);
 
-    setIsSubmitted(true);
-    reset();
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
-    setTimeout(() => setIsSubmitted(false), 3000);
+      const result = await response.json();
+
+      if (response.ok) {
+        setIsSubmitted(true);
+        reset();
+
+        setTimeout(() => {
+          router.push("/auth");
+        }, 2000);
+      } else {
+        setRegisterError(result.error || "Ошибка регистрации");
+      }
+    } catch {
+      setRegisterError("Ошибка соединения с сервером");
+    }
   };
-
-  if (!isMounted) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -85,7 +93,16 @@ export function RegisterForm() {
           {isSubmitted && (
             <Alert className="mb-6">
               <CheckCircle2 className="h-4 w-4" />
-              <AlertDescription>Регистрация успешно завершена! Данные сохранены.</AlertDescription>
+              <AlertDescription>
+                Регистрация успешно завершена! Перенаправление на страницу входа...
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {registerError && (
+            <Alert className="mb-6" variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{registerError}</AlertDescription>
             </Alert>
           )}
 

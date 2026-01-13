@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Menu, ShoppingBag, Users } from "lucide-react";
+import { Menu, ShoppingBag, User, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -14,6 +14,7 @@ const Header = () => {
   const navItems = [
     { href: "/products", label: "Товары", icon: <ShoppingBag className="h-4 w-4" /> },
     { href: "/users", label: "Пользователи", icon: <Users className="h-4 w-4" /> },
+    { href: "/account", label: "Аккаунт", icon: <User className="h-4 w-4" /> },
   ];
 
   const isActive = (href: string) => {

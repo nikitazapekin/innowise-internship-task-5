@@ -1,4 +1,4 @@
-import Cards from "../_components/Cards";
+import Cards from "../../_components/Cards";
 
 interface User {
   id: number;

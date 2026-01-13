@@ -1,9 +1,5 @@
-import styles from "./page.module.css";
+import WelcomeBlock from "./_components/WelcomeBlock";
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}></main>
-    </div>
-  );
+  return <WelcomeBlock />;
 }

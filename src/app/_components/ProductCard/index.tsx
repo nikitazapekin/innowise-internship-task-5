@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Award, Package, ShoppingCart, Star } from "lucide-react";
 import Image from "next/image";
 
+import Modal from "../Modal";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,16 +16,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useCartStore } from "@/store/cartStore";
 
 interface ProductCardProps {
@@ -51,9 +43,7 @@ const ProductCard = ({
   category,
   thumbnail,
 }: ProductCardProps) => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [quantity, setQuantity] = useState(1);
-  const addItem = useCartStore((state) => state.addItem);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const cartItems = useCartStore((state) => state.items);
 
   const discountedPrice = price * (1 - discountPercentage / 100);
@@ -64,41 +54,7 @@ const ProductCard = ({
 
   const handleAddToCart = () => {
     if (availableStock > 0) {
-      setIsDialogOpen(true);
-    }
-  };
-
-  const handleConfirmAdd = () => {
-    addItem({
-      id,
-      title,
-      price,
-      discountedPrice,
-      thumbnail,
-      maxStock: stock,
-      brand,
-    });
-    setIsDialogOpen(false);
-    setQuantity(1);
-  };
-
-  const handleQuantityChange = (value: string) => {
-    const numValue = parseInt(value);
-
-    if (!isNaN(numValue) && numValue > 0 && numValue <= availableStock) {
-      setQuantity(numValue);
-    }
-  };
-
-  const incrementQuantity = () => {
-    if (quantity < availableStock) {
-      setQuantity(quantity + 1);
-    }
-  };
-
-  const decrementQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
+      setIsModalOpen(true);
     }
   };
 
@@ -193,68 +149,19 @@ const ProductCard = ({
         </CardFooter>
       </Card>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Добавить в корзину</DialogTitle>
-            <DialogDescription>Выберите количество товара "{title}"</DialogDescription>
-          </DialogHeader>
-
-          <div className="grid gap-4 py-4">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="quantity">Количество</Label>
-              <span className="text-sm text-muted-foreground">Доступно: {availableStock} шт.</span>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={decrementQuantity}
-                disabled={quantity <= 1}
-              >
-                -
-              </Button>
-
-              <Input
-                id="quantity"
-                type="number"
-                min="1"
-                max={availableStock}
-                value={quantity}
-                onChange={(e) => handleQuantityChange(e.target.value)}
-                className="text-center"
-              />
-
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={incrementQuantity}
-                disabled={quantity >= availableStock}
-              >
-                +
-              </Button>
-            </div>
-
-            <div className="flex items-center justify-between pt-4 border-t">
-              <span className="text-sm text-muted-foreground">Цена за единицу:</span>
-              <span className="font-bold">${discountedPrice.toFixed(2)}</span>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Итого:</span>
-              <span className="text-lg font-bold">${(discountedPrice * quantity).toFixed(2)}</span>
-            </div>
-          </div>
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-              Отмена
-            </Button>
-            <Button onClick={handleConfirmAdd}>Добавить в корзину</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        product={{
+          id,
+          title,
+          price,
+          discountPercentage,
+          stock,
+          thumbnail,
+          brand,
+        }}
+      />
     </>
   );
 };

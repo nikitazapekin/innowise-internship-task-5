@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Search, ShoppingCart, Trash2 } from "lucide-react";
+import { Loader2, Search, ShoppingCart, Trash2 } from "lucide-react";
 
-import CartItemCard from "@/app/_components/CartItem";
+import CartItem from "@/app/_components/CartItem";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,6 +22,25 @@ const Page = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [filteredItems, setFilteredItems] = useState(items);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = useCartStore.persist.onFinishHydration(() => {
+      setIsHydrated(true);
+    });
+
+    if (!useCartStore.persist.hasHydrated()) {
+      setIsHydrated(true);
+    } else {
+      const timeout = setTimeout(() => {
+        setIsHydrated(true);
+      }, 500);
+
+      return () => clearTimeout(timeout);
+    }
+
+    return unsubscribe;
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -49,6 +68,17 @@ const Page = () => {
     clearCart();
   };
 
+  if (!isHydrated) {
+    return (
+      <div className="min-h-screen bg-background p-4 md:p-8 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+          <p className="text-muted-foreground">Загрузка корзины...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (items.length === 0) {
     return (
       <div className="min-h-screen bg-background p-4 md:p-8">
@@ -60,6 +90,9 @@ const Page = () => {
               <p className="text-muted-foreground">
                 Добавьте товары из каталога, чтобы они появились здесь
               </p>
+              <Button className="mt-4" asChild>
+                <a href="/products">Перейти в каталог</a>
+              </Button>
             </CardContent>
           </Card>
         </div>
@@ -106,9 +139,20 @@ const Page = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {filteredItems.map((item) => (
-            <CartItemCard key={item.id} item={item} />
+            <CartItem key={item.id} item={item} />
           ))}
         </div>
+
+        {filteredItems.length === 0 && searchQuery && (
+          <Card className="mb-8">
+            <CardContent className="py-8 text-center">
+              <p className="text-muted-foreground">По запросу "{searchQuery}" ничего не найдено</p>
+              <Button variant="outline" className="mt-4" onClick={() => setSearchQuery("")}>
+                Очистить поиск
+              </Button>
+            </CardContent>
+          </Card>
+        )}
 
         <Card className="mt-8">
           <CardHeader>

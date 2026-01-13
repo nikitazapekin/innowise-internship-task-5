@@ -23,7 +23,12 @@ interface User {
 }
 const handleFetchUsers = async () => {
   try {
-    const response = await fetch("https://dummyjson.com/users");
+    const response = await fetch("https://dummyjson.com/users", {
+      cache: "force-cache",
+      next: {
+        revalidate: 3600,
+      },
+    });
 
     if (!response.ok) {
       throw new Error("Ошибка загрузки данных");

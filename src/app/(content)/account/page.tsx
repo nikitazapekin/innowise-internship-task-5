@@ -1,10 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useEffect } from "react";
 import { Loader2, Search, ShoppingCart, Trash2 } from "lucide-react";
+import Link from "next/link";
 
 import BuyModal from "@/app/_components/BuyModal";
 import CartItem from "@/app/_components/CartItem";
+import { logout } from "@/app/actions/logout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,6 +28,7 @@ const Page = () => {
   const [filteredItems, setFilteredItems] = useState(items);
   const [isHydrated, setIsHydrated] = useState(false);
   const [isOpenBuyModal, setIsOpenBuyModal] = useState(false);
+
   const handleOpenBuyModal = () => {
     setIsOpenBuyModal((prev) => !prev);
   };
@@ -96,12 +100,15 @@ const Page = () => {
                 Добавьте товары из каталога, чтобы они появились здесь
               </p>
               <Button className="mt-4" asChild>
-                <a href="/products">Перейти в каталог</a>
+                <Link href="/products">Перейти в каталог</Link>
               </Button>
             </CardContent>
           </Card>
         </div>
         <BuyModal isOpen={isOpenBuyModal} onClose={handleOpenBuyModal} />
+        <Button className="w-full mt-14 bg-red-200" size="lg" onClick={logout}>
+          Выйти из аккаунта
+        </Button>
       </div>
     );
   }
@@ -124,22 +131,24 @@ const Page = () => {
             </Button>
           </div>
 
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Input
-              placeholder="Поиск товаров в корзине..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
-            {searchQuery && (
-              <Badge
-                variant="secondary"
-                className="absolute right-3 top-1/2 transform -translate-y-1/2"
-              >
-                {filteredItems.length} найдено
-              </Badge>
-            )}
+          <div className="flex justify-center md:justify-start">
+            <div className="relative max-w-md w-full">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                placeholder="Поиск товаров в корзине..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+              {searchQuery && (
+                <Badge
+                  variant="secondary"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                >
+                  {filteredItems.length} найдено
+                </Badge>
+              )}
+            </div>
           </div>
         </div>
 
@@ -195,7 +204,7 @@ const Page = () => {
 
       <BuyModal isOpen={isOpenBuyModal} onClose={handleOpenBuyModal} />
 
-      <Button className="w-full mt-14 bg-red-200" size="lg" onClick={handleOpenBuyModal}>
+      <Button className="w-full mt-14 bg-red-200" size="lg" onClick={logout}>
         Выйти из аккаунта
       </Button>
     </div>

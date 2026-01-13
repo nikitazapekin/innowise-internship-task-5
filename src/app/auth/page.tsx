@@ -1,11 +1,7 @@
 import { LoginForm } from "../_components/LoginForm";
 
-const Register = () => {
-  return (
-    <>
-      <LoginForm />
-    </>
-  );
+const Auth = () => {
+  return <LoginForm />;
 };
 
-export default Register;
+export default Auth;

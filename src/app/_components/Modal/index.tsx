@@ -99,10 +99,8 @@ const Modal = ({ isOpen, onClose, product }: ModalProps) => {
             >
               -
             </Button>
-
             <Input
               id="quantity"
-              type="number"
               min="1"
               max={availableStock}
               value={quantity}

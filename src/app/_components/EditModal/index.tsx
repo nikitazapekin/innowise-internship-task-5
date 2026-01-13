@@ -79,7 +79,6 @@ const EditModal = ({ isOpen, onClose, item }: EditModalProps) => {
 
             <Input
               id="edit-quantity"
-              type="number"
               min="1"
               max={item.maxStock}
               value={quantity}

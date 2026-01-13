@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Loader2, Search, ShoppingCart, Trash2 } from "lucide-react";
 
+import BuyModal from "@/app/_components/BuyModal";
 import CartItem from "@/app/_components/CartItem";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,10 @@ const Page = () => {
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [filteredItems, setFilteredItems] = useState(items);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [isOpenBuyModal, setIsOpenBuyModal] = useState(false);
+  const handleOpenBuyModal = () => {
+    setIsOpenBuyModal((prev) => !prev);
+  };
 
   useEffect(() => {
     const unsubscribe = useCartStore.persist.onFinishHydration(() => {
@@ -96,6 +101,7 @@ const Page = () => {
             </CardContent>
           </Card>
         </div>
+        <BuyModal isOpen={isOpenBuyModal} onClose={handleOpenBuyModal} />
       </div>
     );
   }
@@ -180,12 +186,14 @@ const Page = () => {
           </CardContent>
 
           <CardFooter>
-            <Button className="w-full" size="lg">
+            <Button className="w-full" size="lg" onClick={handleOpenBuyModal}>
               Перейти к оформлению
             </Button>
           </CardFooter>
         </Card>
       </div>
+
+      <BuyModal isOpen={isOpenBuyModal} onClose={handleOpenBuyModal} />
     </div>
   );
 };

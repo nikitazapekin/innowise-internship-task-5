@@ -53,7 +53,7 @@ const EditModal = ({ isOpen, onClose, item }: EditModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] bg-gray-100">
         <DialogHeader>
           <DialogTitle>Изменить количество</DialogTitle>
           <DialogDescription className="line-clamp-2">Товар: {item.title}</DialogDescription>

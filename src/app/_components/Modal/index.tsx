@@ -74,7 +74,7 @@ const Modal = ({ isOpen, onClose, product }: ModalProps) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px] bg-gray-100">
+      <DialogContent className="w-[calc(100%-20px)] max-w-[325px] sm:max-w-none bg-gray-100">
         <DialogHeader>
           <DialogTitle>Добавить в корзину</DialogTitle>
           <DialogDescription className="line-clamp-2">

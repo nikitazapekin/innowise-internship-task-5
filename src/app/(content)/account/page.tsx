@@ -187,13 +187,17 @@ const Page = () => {
 
           <CardFooter>
             <Button className="w-full" size="lg" onClick={handleOpenBuyModal}>
-              Перейти к оформлению
+              Купить
             </Button>
           </CardFooter>
         </Card>
       </div>
 
       <BuyModal isOpen={isOpenBuyModal} onClose={handleOpenBuyModal} />
+
+      <Button className="w-full mt-14 bg-red-200" size="lg" onClick={handleOpenBuyModal}>
+        Выйти из аккаунта
+      </Button>
     </div>
   );
 };

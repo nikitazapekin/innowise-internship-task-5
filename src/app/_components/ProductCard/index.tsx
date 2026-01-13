@@ -44,7 +44,7 @@ const ProductCard = ({
     <Card className="h-full flex flex-col hover:shadow-lg transition-shadow duration-300 overflow-hidden">
       <div className="relative h-48 w-full overflow-hidden bg-gray-100">
         <Image
-          src={thumbnail || "/placeholder-image.jpg"}
+          src={thumbnail}
           alt={title}
           fill
           className="object-cover hover:scale-105 transition-transform duration-300"

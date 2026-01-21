@@ -1,41 +1,9 @@
 import ProductCard from "../ProductCard";
 import UserCard from "../UserCard";
 
-interface Product {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  discountPercentage: number;
-  rating: number;
-  stock: number;
-  brand: string;
-  category: string;
-  thumbnail: string;
-  images: string[];
-}
+import type { Product, User } from "./types";
 
-interface User {
-  id: number;
-  firstName: string;
-  lastName: string;
-  age: number;
-  gender: string;
-  email: string;
-  phone: string;
-  username: string;
-  image: string;
-  birthDate: string;
-  address: {
-    address: string;
-    city: string;
-    state: string;
-  };
-  company: {
-    name: string;
-    title: string;
-  };
-}
+import { cardsConstants } from "@/app/constants";
 
 interface CardsProps {
   cards: Product[] | User[];
@@ -49,23 +17,28 @@ const Cards = ({ cards, type, title }: CardsProps) => {
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-foreground">
-            {title || (type === "products" ? "Каталог товаров" : "Список пользователей")}
+            {title ||
+              (type === cardsConstants.type
+                ? cardsConstants.productsList
+                : cardsConstants.usersList)}
           </h1>
 
           {cards.length == 0 ? (
             <p className="text-muted-foreground mt-20  flex items-center justify-center text-red-600">
-              Ошибка получения {type === "products" ? "товаров" : "пользователей"}
+              Ошибка получения{" "}
+              {type === cardsConstants.type ? cardsConstants.products : cardsConstants.users}
             </p>
           ) : (
             <p className="text-muted-foreground mt-2">
-              Найдено {cards.length} {type === "products" ? "товаров" : "пользователей"}
+              Найдено {cards.length}{" "}
+              {type === cardsConstants.type ? cardsConstants.products : cardsConstants.users}
             </p>
           )}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {cards.map((card) => {
-            if (type === "products") {
+            if (type === cardsConstants.type) {
               const product = card as Product;
 
               return (

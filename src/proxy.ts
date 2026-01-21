@@ -6,11 +6,7 @@ export function proxy(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  if (
-    pathname.startsWith("/products") ||
-    pathname.startsWith("/users") ||
-    pathname.startsWith("/account")
-  ) {
+  if (pathname.startsWith("/products")) {
     if (!currentUser) {
       return NextResponse.redirect(new URL("/auth", request.url));
     }

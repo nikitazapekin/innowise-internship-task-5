@@ -1,6 +1,7 @@
 import { Briefcase, Calendar, Mail, MapPin, Phone, User } from "lucide-react";
 import Image from "next/image";
 
+import { genderConstants } from "@/app/constants/gender";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -80,7 +81,10 @@ const UserCard = ({
         </div>
 
         <Badge className={`absolute top-4 right-4 ${getGenderColor(gender)} text-white`}>
-          {gender === "male" ? "♂" : "♀"} {gender}
+          {gender === genderConstants.maleType
+            ? genderConstants.manSign
+            : genderConstants.womanSign}{" "}
+          {gender}
         </Badge>
 
         <Badge variant="secondary" className="absolute top-4 left-4">

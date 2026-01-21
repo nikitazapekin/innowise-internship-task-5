@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import type { Product } from "./types";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,15 +20,7 @@ import { useCartStore } from "@/store/cartStore";
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  product: {
-    id: number;
-    title: string;
-    price: number;
-    discountPercentage: number;
-    stock: number;
-    thumbnail: string;
-    brand: string;
-  };
+  product: Product;
 }
 
 const Modal = ({ isOpen, onClose, product }: ModalProps) => {

@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Loader2, Search, ShoppingCart, Trash2 } from "lucide-react";
 import Link from "next/link";
 
 import BuyModal from "@/app/_components/BuyModal";
 import CartItem from "@/app/_components/CartItem";
 import { logout } from "@/app/actions/logout";
+import { useDebouncedSearch } from "@/app/hooks/useDebouncedSearch";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,8 +23,11 @@ import { useCartStore } from "@/store/cartStore";
 
 const Page = () => {
   const { items, clearCart, getTotalPrice, getItemCount } = useCartStore();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedQuery, setDebouncedQuery] = useState("");
+
+  const { searchQuery, debouncedQuery, handleSearchChange, clearSearch } = useDebouncedSearch({
+    delay: 300,
+  });
+
   const [filteredItems, setFilteredItems] = useState(items);
   const [isHydrated, setIsHydrated] = useState(false);
   const [isOpenBuyModal, setIsOpenBuyModal] = useState(false);
@@ -50,14 +53,6 @@ const Page = () => {
 
     return unsubscribe;
   }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedQuery(searchQuery);
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
 
   useEffect(() => {
     if (!debouncedQuery.trim()) {
@@ -137,7 +132,7 @@ const Page = () => {
               <Input
                 placeholder="Поиск товаров в корзине..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={handleSearchChange}
                 className="pl-10"
               />
               {searchQuery && (
@@ -162,7 +157,7 @@ const Page = () => {
           <Card className="mb-8">
             <CardContent className="py-8 text-center">
               <p className="text-muted-foreground">По запросу "{searchQuery}" ничего не найдено</p>
-              <Button variant="outline" className="mt-4" onClick={() => setSearchQuery("")}>
+              <Button variant="outline" className="mt-4" onClick={clearSearch}>
                 Очистить поиск
               </Button>
             </CardContent>
